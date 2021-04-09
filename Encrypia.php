@@ -7,15 +7,18 @@
  */
 
 /**
- * An encryption class
- * @param $level 
+ * The two-way encryption class that lets you
+ * blind() and unblind()
+ * texts before you save them into your database.
+ * @param $key The key of Encrypia 
  */
 
 class Encrypia {
 
   private $key;
+  private static $staticKey;
 
-  public function __construct($key) {
+  private function passkey($key) {
     if (in_array(true, [is_object($key), is_array($key), is_bool($key), is_float($key)])) {
       die('Error in Encrypia key type: ' . gettype($key) . '. Allowed types are: [String, Integer].');
     }
@@ -39,12 +42,10 @@ class Encrypia {
       // die('Error in Encrypia key type: ' . gettype($key) . '. Allowed types are: [String, Integer].');
     }
     //
-    $this->key        = $key;
-    $this->key_arr    = str_split($this->key);
-    $this->key_count  = count($this->key_arr);
+    return $key;
   }
 
-  public function blind($text) {
+  private function blind_func($text) {
     $text_arr     = str_split($text);
     $blinded_arr  = [];
     $i = 0;
@@ -58,7 +59,7 @@ class Encrypia {
     return join('', $blinded_arr);
   }
 
-  public function unblind($text) {
+  private function unblind_func($text) {
     $text_arr     = str_split($text);
     $blinded_arr  = [];
     $i = 0;
@@ -72,9 +73,102 @@ class Encrypia {
     return join('', $blinded_arr);
   }
 
+  private static function blind_static($text, $key = null) {
+    $k = $key == null ? self::$staticKey : $key;
+    //
+    if ($k) {
+      $text_arr     = str_split($text);
+      $key_arr      = str_split($k);
+      $key_count    = count($key_arr);
+      $blinded_arr  = [];
+      $i = 0;
+      //
+      foreach ($text_arr as $c) {
+        $new_chr = chr(ord($c) + $key_arr[$i]);
+        $blinded_arr[] = $new_chr;
+        $i = ($i + 1) == $key_count ? 0 : $i + 1;
+      }
+      //
+      return join('', $blinded_arr);
+    }
+    else {
+      die('You have to set the key before.');
+    }
+  }
+
+  private static function unblind_static($text, $key = null) {
+    $k = $key == null ? self::$staticKey : $key;
+    //
+    if ($k) {
+      $text_arr     = str_split($text);
+      $key_arr      = str_split($k);
+      $key_count    = count($key_arr);
+      $blinded_arr  = [];
+      $i = 0;
+      //
+      foreach ($text_arr as $c) {
+        $new_chr = chr(ord($c) - $key_arr[$i]);
+        $blinded_arr[] = $new_chr;
+        $i = ($i + 1) == $key_count ? 0 : $i + 1;
+      }
+      //
+      return join('', $blinded_arr);
+    }
+    else {
+      die('You have to set the key before.');
+    }
+  }
+
+  //
+
+  public function __call($name, $args) {
+    if (in_array($name, ['blind', 'unblind'])) {
+      if (count($args) > 0) {
+        if ($name == 'blind') {
+          return $this->blind_func($args[0]);
+        }
+        else if ($name == 'unblind') {
+          return $this->unblind_func($args[0]);
+        }
+      }
+      else {
+        die("You have to pass a value.");
+      }
+    }
+  }
+
+  public function __construct($key = null) {
+    if ($key != null) {
+      $this->key        = $this->passkey($key);
+      $this->key_arr    = str_split($this->key);
+      $this->key_count  = count($this->key_arr);
+      self::$staticKey  = $this->key;
+    }
+  }
+
   public function __destruct() {
     # code...
-    // echo $this->key;
+  }
+  
+  //
+
+  public static function getKey() {
+    return self::$staticKey ? self::$staticKey : null;
+  }
+
+  public static function setKey($key) {
+    $key = call_user_func('Encrypia::passkey', $key);
+    self::$staticKey = call_user_func('Encrypia::passkey', $key);
+    //
+    return self::class;
+  }
+
+  public static function blind($text, $key = null) {
+    return call_user_func('Encrypia::blind_static', $text, $key);
+  }
+
+  public static function unblind($text, $key = null) {
+    return call_user_func('Encrypia::unblind_static', $text, $key);
   }
 
 }
