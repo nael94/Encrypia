@@ -136,7 +136,7 @@ The benefits of this way is to ```blind()``` or ```unblind()``` texts with a cus
 Encrypia is free to use in all your projects, Commercial and Personal, with a few conditions:
 1) Use Encrypia as is without any modifications. If you did, we do not guarantee that it will work as well. Encrypia is always being improved.
 2) Mention Encrypia and its Gitlab repository link into your documentation and presentation that you made and prepare. This will help us to expand and we appreciate your collaboration.
-3) Loved Encrypia and you would like to support us? Please click Start button in Gitlab and share it with your technical friends.
+3) Loved Encrypia and you would like to support us? Please click Star button in Gitlab and share it with your technical friends.
 
 And, That's it! Thanks for using Encrypia.
 
