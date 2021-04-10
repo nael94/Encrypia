@@ -146,7 +146,10 @@ class Encrypia {
   }
 
   public function __destruct() {
-    # code...
+    $this->key        = null;
+    $this->key_arr    = null;
+    $this->key_count  = null;
+    self::$staticKey  = null;
   }
   
   //
