@@ -18,7 +18,7 @@ class Encrypia {
   private static $staticKey;
 
   private function passkey($key) {
-    if (in_array(true, [is_object($key), is_array($key), is_bool($key), is_float($key)])) {
+    if (in_array(true, array(is_object($key), is_array($key), is_bool($key), is_float($key)))) {
       die('Error in Encrypia key type: ' . gettype($key) . '. Allowed types are: [String, Integer].');
     }
     if (preg_match('/^[0-9]+$/', $key)) {
@@ -46,7 +46,7 @@ class Encrypia {
 
   private function blind_func($text) {
     $text_arr     = str_split($text);
-    $blinded_arr  = [];
+    $blinded_arr  = array();
     $i = 0;
     //
     foreach ($text_arr as $c) {
@@ -60,7 +60,7 @@ class Encrypia {
 
   private function unblind_func($text) {
     $text_arr     = str_split($text);
-    $blinded_arr  = [];
+    $blinded_arr  = array();
     $i = 0;
     //
     foreach ($text_arr as $c) {
@@ -79,7 +79,7 @@ class Encrypia {
       $text_arr     = str_split($text);
       $key_arr      = str_split($k);
       $key_count    = count($key_arr);
-      $blinded_arr  = [];
+      $blinded_arr  = array();
       $i = 0;
       //
       foreach ($text_arr as $c) {
@@ -102,7 +102,7 @@ class Encrypia {
       $text_arr     = str_split($text);
       $key_arr      = str_split($k);
       $key_count    = count($key_arr);
-      $blinded_arr  = [];
+      $blinded_arr  = array();
       $i = 0;
       //
       foreach ($text_arr as $c) {
@@ -121,7 +121,7 @@ class Encrypia {
   //
 
   public function __call($name, $args) {
-    if (in_array($name, ['blind', 'unblind'])) {
+    if (in_array($name, array('blind', 'unblind'))) {
       if (count($args) > 0) {
         if ($name == 'blind') {
           return $this->blind_func($args[0]);
@@ -159,7 +159,7 @@ class Encrypia {
     $key = call_user_func('Encrypia::passkey', $key);
     self::$staticKey = call_user_func('Encrypia::passkey', $key);
     //
-    return self::class;
+    return __CLASS__;
   }
 
   public static function blind($text, $key = null) {
