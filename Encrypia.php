@@ -7,9 +7,8 @@
  */
 
 /**
- * The two-way encryption class that lets you
- * blind() and unblind()
- * texts before you save them into your database.
+ * The two-way PHP-based encryption class with custom unique encryption
+ * key that lets you blind texts before you save them into your database.
  * @param $key The key of Encrypia 
  */
 
